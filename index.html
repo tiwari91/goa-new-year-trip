@@ -92,6 +92,8 @@ nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--late
 .night a{color:var(--sea);font-weight:600;text-decoration:none;font-size:13.5px}
 .cost{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cost span:empty{display:none}
+.maplink{display:inline-block;background:var(--sea);color:#fff;font-weight:600;text-decoration:none;border-radius:8px;padding:8px 14px;margin:0 8px 6px 0}
+.muted-note{color:var(--muted);font-size:12.5px}
 .stay .rnote{margin:0;font-size:12px;color:var(--muted)}
 .stay .rate{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
 .stay .rate input{font:500 14px var(--mono);width:96px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);text-align:right}
@@ -124,6 +126,7 @@ footer{margin-top:36px;color:var(--muted);font-size:12.5px;border-top:1px solid 
   <section id="plan" aria-labelledby="h-plan">
     <h2 id="h-plan">Five days, 29 Dec to 2 Jan</h2>
     <p class="lede">About 955 km by car, never more than 5 hours of driving on a day with the baby, except the drive home. Each day shows where you sleep and what the day costs; change the numbers in the budget below.</p>
+    <p><a class="maplink" id="wholeRoute" target="_blank" rel="noopener">Whole route on Google Maps</a> <small class="muted-note">Pune, Kolhapur, Amboli, your coast stay, Morjim, Panjim and home. On a phone the Maps app may drop some stops; use the per-day links there.</small></p>
     <div class="days" id="days">
       <div class="day"><div class="date">Tue<strong>29</strong>Dec</div><h3>Pune to Kolhapur</h3><div class="meta">230 km · 4.5–5 h · NH48</div><p>Leave by 8 AM. Afternoon darshan at Mahalaxmi temple, Rankala lake at sunset. Night in Kolhapur.</p></div>
       <div class="day"><div class="date">Wed<strong>30</strong>Dec</div><h3>Over Amboli ghat to the coast</h3><div class="meta">155 km · 4 h</div><p>Amboli ghat viewpoints on the way (the waterfalls run in the monsoon and are mostly dry by late December), lunch in Sawantwadi. Check in before dark.</p></div>
@@ -258,6 +261,31 @@ stays.forEach(s => {
   list.appendChild(el);
 });
 
+/* Google Maps directions: one link per day and one for the whole trip, through the chosen coast stay. */
+const KOLHAPUR_HOTEL = 'Hotel Landmark, Amatya Tower, Dabholkar Corner, Kolhapur 416003';
+const PUNE = 'Pune, Maharashtra';
+const dirUrl = (stops) => 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=' + encodeURIComponent(stops[0]) +
+  '&destination=' + encodeURIComponent(stops[stops.length - 1]) +
+  (stops.length > 2 ? '&waypoints=' + stops.slice(1, -1).map(encodeURIComponent).join('%7C') : '');
+function routes(stay){
+  return {
+    days: [
+      [PUNE, 'Shri Mahalakshmi Ambabai Temple, Kolhapur', KOLHAPUR_HOTEL],
+      [KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', 'Sawantwadi, Maharashtra', stay],
+      [stay, 'Redi Ganpati Temple, Redi', 'Morjim Beach, Goa', stay],
+      [stay, 'Fontainhas, Panaji, Goa', 'Basilica of Bom Jesus, Old Goa', stay],
+      [stay, 'Amboli Ghat, Maharashtra', 'Kolhapur, Maharashtra', PUNE]
+    ],
+    // Google Maps takes at most 9 stops between start and end.
+    whole: [PUNE, KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', stay, 'Morjim Beach, Goa', stay, 'Fontainhas, Panaji, Goa', stay, 'Amboli Ghat, Maharashtra', 'Kolhapur, Maharashtra', PUNE]
+  };
+}
+function setRoutes(stay){
+  const r = routes(stay);
+  document.querySelectorAll('[data-route]').forEach(a => { a.href = dirUrl(r.days[+a.dataset.route]); });
+  const w = document.getElementById('wholeRoute'); if (w) w.href = dirUrl(r.whole);
+}
+
 /* Each day: route km share, tolls, and the night's stay. Kolhapur is night 1; the coast is nights 2–4. */
 const DAYS = [
   { km:230, toll:.5, night:'kolhapur' },
@@ -271,9 +299,10 @@ dayEls.forEach((el, i) => {
   const x = document.createElement('div'); x.className = 'extra';
   const d = DAYS[i];
   let night = '';
-  if (d.night === 'kolhapur') night = `<div class="night"><span class="lbl">Night</span><b>Kolhapur hotel</b><small>not chosen yet, near Mahalaxmi temple</small><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/${encodeURIComponent('family hotels near Mahalaxmi temple Kolhapur')}">Find one</a></div>`;
+  if (d.night === 'kolhapur') night = `<div class="night"><span class="lbl">Night</span><b>Hotel Landmark</b><small>Amatya Tower, Dabholkar Corner · 10 min from Mahalaxmi temple</small><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(KOLHAPUR_HOTEL)}">Map</a></div>`;
   else if (d.night === 'coast') night = `<div class="night"><span class="lbl">Night</span><select aria-label="Stay for this night" data-stay-select>${stays.map(s => `<option value="${s.id}"></option>`).join('')}</select><small data-stay-place></small><a target="_blank" rel="noopener" data-stay-map>Map</a></div>`;
   else night = `<div class="night"><span class="lbl">Night</span><b>Home in Pune</b></div>`;
+  night += `<div class="night"><span class="lbl">Route</span><a target="_blank" rel="noopener" data-route="${i}">Open this day in Google Maps</a></div>`;
   x.innerHTML = night + `<div class="cost"><span class="lbl">Cost</span><span data-c="fuel"></span><span data-c="toll"></span><span data-c="stay"></span><span data-c="food"></span><span class="sum" data-c="sum"></span></div>`;
   x.querySelectorAll('option').forEach((o, k) => { o.textContent = stays[k].name; });
   el.appendChild(x);
@@ -285,6 +314,7 @@ function setStay(id){
   document.querySelectorAll('[data-stay-select]').forEach(sel => { sel.value = s.id; });
   document.querySelectorAll('[data-stay-place]').forEach(e => { e.textContent = s.place; });
   document.querySelectorAll('[data-stay-map]').forEach(a => { a.href = 'https://www.google.com/maps/search/' + encodeURIComponent(s.q); });
+  setRoutes(s.q);
   stayBtns.forEach(([sid, b]) => { const on = sid === s.id; b.setAttribute('aria-pressed', on); b.textContent = on ? 'Staying here' : 'Stay here'; });
   if (budgetReady) { document.getElementById('r2').value = rateOf(s.id); calc(); }
 }
