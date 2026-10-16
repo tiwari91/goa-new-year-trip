@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Goa New Year Road Trip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: two tabs. Trip: each day card carries its route, that night's stay and that day's cost, then the editable budget and the stay comparison. Before you leave: the checklist. Konkan palette: laterite, coconut green, Arabian Sea. */
+:root{
+  --bg:#f6f3ee; --surface:#fffdf9; --ink:#22201c; --muted:#6b645a; --line:#e2dbd0;
+  --laterite:#b2472e; --sea:#0f6f73; --palm:#3f6b2f; --sand:#efe4cf; --warn:#a15c00;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#15171a; --surface:#1d2024; --ink:#ece7df; --muted:#a39b8f; --line:#2f3338;
+  --laterite:#e07a5f; --sea:#4fb3b5; --palm:#8cbf6e; --sand:#2a2722; --warn:#e3a14a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#15171a; --surface:#1d2024; --ink:#ece7df; --muted:#a39b8f; --line:#2f3338;
+  --laterite:#e07a5f; --sea:#4fb3b5; --palm:#8cbf6e; --sand:#2a2722; --warn:#e3a14a; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+header h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,6vw,42px);line-height:1.1;margin:0;text-wrap:balance}
+header p{color:var(--muted);margin:8px 0 0;max-width:62ch}
+.route{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.route b{color:var(--ink);font-weight:500}
+.route span.arrow{color:var(--laterite)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--sea);outline-offset:2px}
+section{margin-top:30px;padding-top:26px;border-top:1px solid var(--line)}
+h2{font-family:var(--display);font-weight:400;font-size:24px;margin:0 0 4px}
+.lede{color:var(--muted);margin:0 0 18px}
+.days{display:grid;gap:12px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+.day .date{font-family:var(--mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;grid-row:span 3;min-width:62px}
+.day .date strong{display:block;font-family:var(--display);font-size:24px;font-weight:400;color:var(--ink);letter-spacing:0;text-transform:none}
+.day h3{margin:0;font-size:16px}
+.day .meta{font-family:var(--mono);font-size:12.5px;color:var(--sea)}
+.day p{margin:0;color:var(--muted)}
+.day.key{border-color:var(--laterite)}
+.day.key h3::after{content:"New Year's Eve";margin-left:8px;font:600 11px var(--body);color:var(--laterite);border:1px solid var(--laterite);border-radius:99px;padding:1px 8px;vertical-align:2px}
+.stays{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.stay{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.stay .place{font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.stay h3{margin:0;font-size:16.5px}
+.stay .rating{font-family:var(--mono);font-size:12.5px}
+.stay .note{color:var(--muted);margin:0;flex:1}
+.pill{align-self:flex-start;font:600 11px var(--body);border-radius:99px;padding:2px 9px;border:1px solid currentColor}
+.pill.top{color:var(--palm)} .pill.caution{color:var(--warn)} .pill.stop{color:var(--sea)}
+.stay .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.stay a{color:var(--sea);font-weight:600;text-decoration:none}
+.stay a:hover{text-decoration:underline}
+.pick{font:600 13px var(--body);background:none;border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--ink);cursor:pointer}
+.pick[aria-pressed="true"]{background:var(--laterite);border-color:var(--laterite);color:#fff}
+.tips{margin-top:20px;background:var(--sand);border-radius:10px;padding:14px 18px}
+.tips h3{margin:0 0 6px;font-size:15px}
+.tips ul{margin:0;padding-left:18px}
+.calc{display:grid;gap:18px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:640px){.calc{grid-template-columns:1fr}}
+.fields{display:grid;gap:10px}
+.field{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:center}
+.field label{font-size:14px}
+.field small{display:block;color:var(--muted);font-size:12px}
+.field input{font:500 14px var(--mono);padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);width:100%;text-align:right}
+.total{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;align-self:start}
+.total table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.total td{padding:6px 0;border-bottom:1px solid var(--line)}
+.total td:last-child{text-align:right;font-family:var(--mono)}
+.total tr.sum td{border-bottom:0;padding-top:12px;font-weight:700;font-size:18px}
+.total tr.sum td:last-child{color:var(--laterite)}
+.total .compare{color:var(--muted);font-size:13px;margin:10px 0 0}
+.checklist{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.group h3{margin:0 0 8px;font-size:15px}
+.group label{display:flex;gap:9px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.group input{margin-top:4px;accent-color:var(--palm)}
+.group input:checked + span{color:var(--muted);text-decoration:line-through}
+.progress{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:12px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin-top:22px;border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto}
+nav button{font:600 14px var(--body);color:var(--muted);background:none;border:0;padding:12px 14px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--laterite)}
+.panel > section:first-child{border-top:0;margin-top:0}
+.day .extra{grid-column:2;display:grid;gap:8px;margin-top:8px;padding-top:10px;border-top:1px dashed var(--line)}
+.night{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.night .lbl,.cost .lbl{font:600 11px var(--body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);min-width:44px}
+.night b{font-weight:600}
+.night small{color:var(--muted)}
+.night select{font:500 13.5px var(--body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:4px 8px;max-width:100%}
+.night a{color:var(--sea);font-weight:600;text-decoration:none;font-size:13.5px}
+.cost{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.cost span:empty{display:none}
+.stay .rnote{margin:0;font-size:12px;color:var(--muted)}
+.stay .rate{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.stay .rate input{font:500 14px var(--mono);width:96px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--ink);text-align:right}
+.cost .sum{color:var(--laterite);font-weight:500;font-size:14px;margin-left:auto}
+.tripsum{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;padding:12px 16px;border-radius:10px;background:var(--sand)}
+.tripsum b{font-family:var(--mono);font-size:18px;color:var(--laterite)}
+details.compare-stays summary{cursor:pointer;font:600 15px var(--body);padding:4px 0}
+details.compare-stays[open] summary{margin-bottom:12px}
+@media (max-width:520px){.day{grid-template-columns:1fr}.day .date{grid-row:auto;display:flex;gap:6px;align-items:baseline}.day .date strong{display:inline;font-size:20px}.day .extra{grid-column:1}.cost .sum{margin-left:0}}
+footer{margin-top:36px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Goa New Year Road Trip</h1>
+    <p>Stay just across the border in Sindhudurg, where rooms cost a fraction of Goa's New Year rates, and drive into North Goa for the night of 31 December.</p>
+    <div class="route" aria-label="Route">
+      <b>Pune</b><span class="arrow">→</span><b>Kolhapur</b><span class="arrow">→</span><b>Amboli</b><span class="arrow">→</span><b>Shiroda / Sawantwadi</b><span class="arrow">⇄</span><b>Morjim · Arambol</b><span class="arrow">→</span><b>Belagavi</b><span class="arrow">→</span><b>Pune</b>
+    </div>
+  </header>
+
+  <nav role="tablist" aria-label="Trip sections">
+    <button role="tab" id="tab-trip" aria-controls="trip" aria-selected="true">Trip plan</button>
+    <button role="tab" id="tab-before" aria-controls="before" aria-selected="false">Before you leave</button>
+  </nav>
+
+  <div class="panel" id="trip" role="tabpanel" aria-labelledby="tab-trip">
+  <section id="plan" aria-labelledby="h-plan">
+    <h2 id="h-plan">Five days, 29 Dec to 2 Jan</h2>
+    <p class="lede">About 975 km by car, never more than 5 hours of driving on a day with the baby, except the drive home. Each day shows where you sleep and what the day costs; change the numbers in the budget below.</p>
+    <div class="days" id="days">
+      <div class="day"><div class="date">Tue<strong>29</strong>Dec</div><h3>Pune to Kolhapur</h3><div class="meta">230 km · 4.5–5 h · NH48</div><p>Leave by 8 AM. Afternoon darshan at Mahalaxmi temple, Rankala lake at sunset. Night in Kolhapur.</p></div>
+      <div class="day"><div class="date">Wed<strong>30</strong>Dec</div><h3>Over Amboli ghat to the coast</h3><div class="meta">155 km · 4 h</div><p>Amboli viewpoints and waterfall on the way, lunch in Sawantwadi. Check in before dark.</p></div>
+      <div class="day key"><div class="date">Thu<strong>31</strong>Dec</div><h3>New Year in North Goa</h3><div class="meta">70 km round trip · 1.5 h</div><p>Morning at Redi beach and Redi Ganpati. Leave at 4 PM for Morjim, Ashwem or Arambol; park early, watch the early fireworks, head back by about 12:30–1 AM. The driver does not drink.</p></div>
+      <div class="day"><div class="date">Fri<strong>1</strong>Jan</div><h3>Panjim and Old Goa</h3><div class="meta">100 km round trip · 2.5 h</div><p>Fontainhas lanes, Basilica of Bom Jesus, a slow lunch. Or a quiet day at Tiracol Fort and the beach.</p></div>
+      <div class="day"><div class="date">Sat<strong>2</strong>Jan</div><h3>Home via Belagavi</h3><div class="meta">420 km · 9 h · NH48</div><p>Leave by 7 AM, break at Belagavi for lunch, reach Pune by evening.</p></div>
+    </div>
+    <div class="tripsum"><span>Whole trip</span><b id="tripTotal">₹0</b></div>
+  </section>
+
+  <section id="stays" aria-labelledby="h-stays">
+    <details class="compare-stays">
+    <summary id="h-stays">Compare the coast stays</summary>
+    <p class="lede">Ratings are from public listings in October 2026 and most have few reviews. Read the latest reviews before booking. Starting rates come from old online listings where any exist (the plan's ₹7,500 where none do); none are New Year quotes. Type in the rate each place quotes you. "Stay here" uses that stay and its rate for the coast nights above.</p>
+    <div class="stays" id="stayList"></div>
+    <div class="tips">
+      <h3>Picking a safe place</h3>
+      <ul>
+        <li>Book on MakeMyTrip, Goibibo or Booking.com so there is a record and a refund route.</li>
+        <li>Look for recent family reviews that mention gated parking, CCTV and staff at night.</li>
+        <li>Ask for a ground-floor room and power backup for the baby and your parents.</li>
+        <li>Prefer a main road or town over an isolated homestay; you return around 1 AM on New Year's night.</li>
+      </ul>
+    </div>
+    </details>
+  </section>
+
+  <section id="budget" aria-labelledby="h-budget">
+    <h2 id="h-budget">Budget</h2>
+    <p class="lede">Change any number; the total updates. Starting values come from the trip plan: a compact SUV at 14.5 km/l with a full car, Pune petrol on 1 Oct 2026.</p>
+    <div class="calc">
+      <div class="fields">
+        <div class="field"><label for="km">Distance (km)<small>whole trip</small></label><input id="km" type="number" inputmode="decimal" value="975"></div>
+        <div class="field"><label for="kmpl">Mileage (km/l)<small>loaded, highway</small></label><input id="kmpl" type="number" inputmode="decimal" step="0.1" value="14.5"></div>
+        <div class="field"><label for="petrol">Petrol (₹/litre)<small>Pune, 1 Oct 2026</small></label><input id="petrol" type="number" inputmode="decimal" step="0.01" value="111.52"></div>
+        <div class="field"><label for="tolls">Tolls (₹)<small>both ways, FASTag</small></label><input id="tolls" type="number" inputmode="decimal" value="1050"></div>
+        <div class="field"><label for="n1">Kolhapur nights</label><input id="n1" type="number" inputmode="numeric" value="1"></div>
+        <div class="field"><label for="r1">Kolhapur ₹ per night<small>2 rooms</small></label><input id="r1" type="number" inputmode="decimal" value="4000"></div>
+        <div class="field"><label for="n2">Coast nights</label><input id="n2" type="number" inputmode="numeric" value="3"></div>
+        <div class="field"><label for="r2">Coast ₹ per night<small>2 rooms, New Year</small></label><input id="r2" type="number" inputmode="decimal" value="7500"></div>
+        <div class="field"><label for="food">Food (₹)</label><input id="food" type="number" inputmode="decimal" value="5000"></div>
+        <div class="field"><label for="misc">Parking, entries, misc (₹)</label><input id="misc" type="number" inputmode="decimal" value="2000"></div>
+      </div>
+      <div class="total" aria-live="polite">
+        <table>
+          <tr><td>Fuel (<span id="litres">0</span> litres)</td><td id="tFuel">₹0</td></tr>
+          <tr><td>Tolls</td><td id="tTolls">₹0</td></tr>
+          <tr><td>Stays</td><td id="tStay">₹0</td></tr>
+          <tr><td>Food</td><td id="tFood">₹0</td></tr>
+          <tr><td>Misc</td><td id="tMisc">₹0</td></tr>
+          <tr class="sum"><td>Total</td><td id="tSum">₹0</td></tr>
+        </table>
+        <p class="compare">A mid-range Goa hotel for the same week runs about ₹70,000 or more for the stay alone.</p>
+        <button class="pick" id="resetBudget" type="button">Reset to plan values</button>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <div class="panel" id="before" role="tabpanel" aria-labelledby="tab-before" hidden>
+  <section id="check" aria-labelledby="h-check">
+    <h2 id="h-check">Before you leave</h2>
+    <p class="progress" id="progress"></p>
+    <div class="checklist" id="checklist"></div>
+  </section>
+  </div>
+
+  <footer>Hotel prices for these dates are estimates and not verified; distances and times are approximate. Shortlist, budget changes and ticks are saved only in this browser.</footer>
+</div>
+
+<script>
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+
+/* Stays */
+const stays = [
+  { id:'konkan-crown', place:'Sawantwadi · ~1 h to North Goa', name:'Konkan Crown Resort & Club', rating:'8.5 · 34 reviews', note:'Proper resort in town. Spacious, clean rooms and good food; the pool is dated.', tag:['top','Safest pick'], q:'Konkan Crown Resort Sawantwadi', rate:4400, rnote:'About ₹1,600–2,200 a room in December on Kayak and Trip.com, before any New Year surcharge' },
+  { id:'dilip', place:'Shiroda, Velagar beach · ~30–40 min to Goa', name:'Dilip Beach Resort', rating:'4.3 Google (23) · 4.3 Justdial (34)', note:'Closest to Goa, on the beach, with pool, AC and parking. Mixed reviews on cleanliness and staff.', tag:['caution','Check recent reviews'], q:'Dilip Beach Resort Shiroda Velagar' },
+  { id:'sneh', place:'Vengurla · ~1 h to Arambol', name:'Sneh Beach Homestay', rating:'9.1 · 6 reviews', note:'Welcoming family hosts. Few reviews so far.', tag:['caution','Few reviews'], q:'Sneh Beach Homestay Vengurla', rate:6000, rnote:'About ₹2,600–3,000 a night for two adults on Booking.com, undated' },
+  { id:'seaview', place:'Vengurla', name:'Sea View Homestay', rating:'9.2 · 5 reviews', note:'Well rated, small sample.', tag:['caution','Few reviews'], q:'Sea View Homestay Vengurla' },
+  { id:'dolphin', place:'Shiroda, Velagar beach', name:'Dolphin Bay', rating:'One review: average, affordable', note:'Owner-run, on private land by the beach.', tag:['caution','Little info'], q:'Dolphin Bay Velagar Shiroda' },
+  { id:'surya', place:'Tarkarli · stop on the way', name:'Hotel Surya Grande', rating:'Positive family reviews', note:'Family rooms and parking. Use it if you take the Konkan coast route.', tag:['stop','Route stop'], q:'Hotel Surya Grande Tarkarli' },
+  { id:'shilpgram', place:'Charathe, Sindhudurg', name:'Shilpgram Heritage Resort', rating:'Positive family reviews', note:'Big, clean rooms and good food.', tag:['stop','Alternative'], q:'Shilpgram Heritage Resort Sindhudurg', rate:7000, rnote:'About ₹3,500 a room on Trip.com, undated' }
+];
+/* Tabs */
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+function showTab(id){
+  tabs.forEach(t => { const on = t.getAttribute('aria-controls') === id; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; document.getElementById(t.getAttribute('aria-controls')).hidden = !on; });
+  store.set('goa-tab2', id);
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => showTab(t.getAttribute('aria-controls')));
+  t.addEventListener('keydown', e => {
+    const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!d) return; e.preventDefault(); const n = tabs[(i + d + tabs.length) % tabs.length]; n.focus(); n.click();
+  });
+});
+showTab(location.hash === '#checklist' ? 'before' : store.get('goa-tab2', 'trip'));
+
+/* Which stay the coast nights use; the old shortlist's first pick seeds it. */
+const firstPick = store.get('goa-picked', [])[0];
+let chosen = store.get('goa-stay', firstPick && stays.some(s => s.id === firstPick) ? firstPick : 'konkan-crown');
+const stayBtns = [];
+/* Each stay keeps its own nightly rate; the coast rate in the budget follows the chosen stay. */
+const rates = store.get('goa-rates', {});
+let budgetReady = false;
+const list = document.getElementById('stayList');
+stays.forEach(s => {
+  const el = document.createElement('article'); el.className = 'stay';
+  el.innerHTML = `<div class="place"></div><h3></h3><div class="rating"></div><span class="pill ${s.tag[0]}"></span><p class="note"></p>
+    <div class="row"><button class="pick" type="button" id="pick-${s.id}">Stay here</button><a target="_blank" rel="noopener">Map</a><a target="_blank" rel="noopener">Reviews</a></div>`;
+  el.querySelector('.place').textContent = s.place;
+  el.querySelector('h3').textContent = s.name;
+  el.querySelector('.rating').textContent = s.rating;
+  el.querySelector('.pill').textContent = s.tag[1];
+  el.querySelector('.note').textContent = s.note;
+  const [map, rev] = el.querySelectorAll('a');
+  map.href = 'https://www.google.com/maps/search/' + encodeURIComponent(s.q);
+  rev.href = 'https://www.google.com/search?q=' + encodeURIComponent(s.q + ' reviews');
+  const b = el.querySelector('.pick');
+  stayBtns.push([s.id, b]);
+  b.addEventListener('click', () => setStay(s.id));
+  const rl = document.createElement('label'); rl.className = 'rate';
+  rl.innerHTML = `<span>₹ per night, 2 rooms</span><input type="number" inputmode="decimal" id="rate-${s.id}">`;
+  const ri = rl.querySelector('input');
+  ri.addEventListener('input', () => { rates[s.id] = ri.value; store.set('goa-rates', rates); if (s.id === chosen) { document.getElementById('r2').value = ri.value; calc(); } });
+  el.querySelector('.row').before(rl);
+  const rn = document.createElement('p'); rn.className = 'rnote';
+  rn.textContent = (s.rnote || 'No price online; the plan estimate is used. Phone them for the New Year rate') + '. Rough; 2 rooms.';
+  rl.after(rn);
+  list.appendChild(el);
+});
+
+/* Each day: route km share, tolls, and the night's stay. Kolhapur is night 1; the coast is nights 2–4. */
+const DAYS = [
+  { km:230, toll:.5, night:'kolhapur' },
+  { km:155, night:'coast' },
+  { km:70,  night:'coast' },
+  { km:100, night:'coast' },
+  { km:420, toll:.5, night:null }
+];
+const dayEls = [...document.querySelectorAll('#days .day')];
+dayEls.forEach((el, i) => {
+  const x = document.createElement('div'); x.className = 'extra';
+  const d = DAYS[i];
+  let night = '';
+  if (d.night === 'kolhapur') night = `<div class="night"><span class="lbl">Night</span><b>Kolhapur hotel</b><small>not chosen yet, near Mahalaxmi temple</small><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/${encodeURIComponent('family hotels near Mahalaxmi temple Kolhapur')}">Find one</a></div>`;
+  else if (d.night === 'coast') night = `<div class="night"><span class="lbl">Night</span><select aria-label="Stay for this night" data-stay-select>${stays.map(s => `<option value="${s.id}"></option>`).join('')}</select><small data-stay-place></small><a target="_blank" rel="noopener" data-stay-map>Map</a></div>`;
+  else night = `<div class="night"><span class="lbl">Night</span><b>Home in Pune</b></div>`;
+  x.innerHTML = night + `<div class="cost"><span class="lbl">Cost</span><span data-c="fuel"></span><span data-c="toll"></span><span data-c="stay"></span><span data-c="food"></span><span class="sum" data-c="sum"></span></div>`;
+  x.querySelectorAll('option').forEach((o, k) => { o.textContent = stays[k].name; });
+  el.appendChild(x);
+});
+document.querySelectorAll('[data-stay-select]').forEach(sel => sel.addEventListener('change', () => setStay(sel.value)));
+function setStay(id){
+  chosen = id; store.set('goa-stay', id);
+  const s = stays.find(x => x.id === id) || stays[0];
+  document.querySelectorAll('[data-stay-select]').forEach(sel => { sel.value = s.id; });
+  document.querySelectorAll('[data-stay-place]').forEach(e => { e.textContent = s.place; });
+  document.querySelectorAll('[data-stay-map]').forEach(a => { a.href = 'https://www.google.com/maps/search/' + encodeURIComponent(s.q); });
+  stayBtns.forEach(([sid, b]) => { const on = sid === s.id; b.setAttribute('aria-pressed', on); b.textContent = on ? 'Staying here' : 'Stay here'; });
+  if (budgetReady) { document.getElementById('r2').value = rateOf(s.id); calc(); }
+}
+const PLAN_RATE = document.getElementById('r2').defaultValue;
+const baseRate = id => { const s = stays.find(x => x.id === id); return s && s.rate ? String(s.rate) : PLAN_RATE; };
+const rateOf = id => rates[id] !== undefined && rates[id] !== '' ? rates[id] : baseRate(id);
+stays.forEach(s => { document.getElementById('rate-' + s.id).value = rateOf(s.id); });
+setStay(chosen);
+
+/* Budget */
+const ids = ['km','kmpl','petrol','tolls','n1','r1','n2','r2','food','misc'];
+const defaults = Object.fromEntries(ids.map(i => [i, document.getElementById(i).value]));
+const saved = store.get('goa-budget', {});
+ids.forEach(i => { if (saved[i] !== undefined) document.getElementById(i).value = saved[i]; });
+const inr = n => '₹' + Math.round(n).toLocaleString('en-IN');
+function calc(){
+  const v = Object.fromEntries(ids.map(i => [i, Math.max(0, parseFloat(document.getElementById(i).value) || 0)]));
+  const litres = v.kmpl ? v.km / v.kmpl : 0;
+  const fuel = litres * v.petrol, stay = v.n1 * v.r1 + v.n2 * v.r2;
+  document.getElementById('litres').textContent = litres.toFixed(0);
+  document.getElementById('tFuel').textContent = inr(fuel);
+  document.getElementById('tTolls').textContent = inr(v.tolls);
+  document.getElementById('tStay').textContent = inr(stay);
+  document.getElementById('tFood').textContent = inr(v.food);
+  document.getElementById('tMisc').textContent = inr(v.misc);
+  document.getElementById('tSum').textContent = inr(fuel + v.tolls + stay + v.food + v.misc);
+  // Per day: km scaled to the distance entered, tolls on the two highway days, food and misc split evenly.
+  const baseKm = DAYS.reduce((a, d) => a + d.km, 0);
+  let coastLeft = v.n2, all = 0;
+  DAYS.forEach((d, i) => {
+    const f = v.kmpl ? d.km * (v.km / baseKm) / v.kmpl * v.petrol : 0;
+    const t = (d.toll || 0) * v.tolls;
+    let st = 0;
+    if (d.night === 'kolhapur') st = v.n1 > 0 ? v.r1 : 0;
+    else if (d.night === 'coast' && coastLeft > 0) { st = v.r2; coastLeft--; }
+    const fo = v.food / DAYS.length, mi = v.misc / DAYS.length;
+    const sum = f + t + st + fo + mi; all += sum;
+    const q = k => dayEls[i].querySelector(`[data-c="${k}"]`);
+    q('fuel').textContent = 'Fuel ' + inr(f);
+    q('toll').textContent = t ? 'Tolls ' + inr(t) : '';
+    q('stay').textContent = st ? 'Stay ' + inr(st) : '';
+    q('food').textContent = 'Food + misc ' + inr(fo + mi);
+    q('sum').textContent = inr(sum);
+  });
+  document.getElementById('tripTotal').textContent = inr(all);
+  store.set('goa-budget', Object.fromEntries(ids.map(i => [i, document.getElementById(i).value])));
+}
+ids.forEach(i => document.getElementById(i).addEventListener('input', calc));
+// The coast rate field is the chosen stay's rate: editing it updates that stay.
+document.getElementById('r2').addEventListener('input', e => { rates[chosen] = e.target.value; store.set('goa-rates', rates); const ri = document.getElementById('rate-' + chosen); if (ri) ri.value = e.target.value; });
+document.getElementById('resetBudget').addEventListener('click', () => { ids.forEach(i => document.getElementById(i).value = defaults[i]); for (const k in rates) delete rates[k]; store.set('goa-rates', rates); stays.forEach(s => { document.getElementById('rate-' + s.id).value = baseRate(s.id); }); document.getElementById('r2').value = rateOf(chosen); calc(); });
+document.getElementById('r2').value = rateOf(chosen);
+budgetReady = true;
+calc();
+
+/* Checklist */
+const groups = {
+  'Documents': ['Driving licence','RC and car insurance papers','FASTag recharged','Aadhaar for every adult','Hotel bookings saved offline'],
+  'Car': ['Tyre pressure and spare','Coolant and oil checked','Phone mount and charger','First-aid kit','Offline maps for Amboli ghat'],
+  'For the baby': ['Diapers and wipes for 6 days','Feeding bottles and steriliser','Warm layers for Amboli nights','Baby medicines and thermometer','Ear muffs for fireworks','Car seat fitted'],
+  "New Year's night": ['Parking spot picked near Morjim','Designated driver, no drinking','Torch and power bank','Leave by 12:30–1 AM','Hotel told you will be back late']
+};
+const ticks = store.get('goa-ticks', {});
+const cl = document.getElementById('checklist'); let n = 0;
+Object.entries(groups).forEach(([g, items]) => {
+  const div = document.createElement('div'); div.className = 'group';
+  const h = document.createElement('h3'); h.textContent = g; div.appendChild(h);
+  items.forEach(t => {
+    const id = 'c' + (n++); const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" id="${id}"><span></span>`; lab.querySelector('span').textContent = t;
+    const box = lab.querySelector('input'); box.checked = !!ticks[t];
+    box.addEventListener('change', () => { ticks[t] = box.checked; store.set('goa-ticks', ticks); prog(); });
+    div.appendChild(lab);
+  });
+  cl.appendChild(div);
+});
+function prog(){ const all = cl.querySelectorAll('input'); const done = [...all].filter(b => b.checked).length; document.getElementById('progress').textContent = `${done} of ${all.length} done`; }
+prog();
+</script>
+
+</body>
+</html>
