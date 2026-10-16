@@ -92,6 +92,13 @@ nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--late
 .night a{color:var(--sea);font-weight:600;text-decoration:none;font-size:13.5px}
 .cost{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .cost span:empty{display:none}
+.along summary{cursor:pointer;font:600 13.5px var(--body);color:var(--ink)}
+.along ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:7px}
+.along li{display:grid;grid-template-columns:62px 1fr;gap:8px;align-items:baseline;font-size:14px}
+.along li small{color:var(--muted);font-size:13px}
+.along li a{color:var(--sea);font-weight:600;text-decoration:none;font-size:13px}
+.k{font:600 10.5px var(--body);text-transform:uppercase;letter-spacing:.06em;border-radius:99px;padding:1px 7px;text-align:center;border:1px solid currentColor;justify-self:start}
+.k-temple{color:var(--laterite)} .k-see{color:var(--sea)} .k-shop{color:var(--palm)}
 .maplink{display:inline-block;background:var(--sea);color:#fff;font-weight:600;text-decoration:none;border-radius:8px;padding:8px 14px;margin:0 8px 6px 0}
 .muted-note{color:var(--muted);font-size:12.5px}
 .stay .rnote{margin:0;font-size:12px;color:var(--muted)}
@@ -286,6 +293,32 @@ function setRoutes(stay){
   const w = document.getElementById('wholeRoute'); if (w) w.href = dirUrl(r.whole);
 }
 
+const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
+/* Along the way: temples first, then sights. "detour" = off the main road. */
+const ALONG = [
+  [ { n:'Shri Mahalakshmi (Ambabai) Temple, Kolhapur', k:'Temple', d:'One of the Shakti Peethas; evening aarti. Busy at New Year, go early.' },
+    { n:'Dholya Ganpati Temple, Wai', k:'Temple', d:'Riverside Ganpati on the Krishna ghats. Detour, about 15 km off NH48 near Surur.' },
+    { n:'Jyotiba Temple, Wadi Ratnagiri', k:'Temple', d:'Hilltop temple 17 km north of Kolhapur. Detour; morning is best.' },
+    { n:'Rankala Lake, Kolhapur', k:'See', d:'Lakeside walk and street food at sunset.' },
+    { n:'New Palace Museum, Kolhapur', k:'See', d:'Shahu Maharaj palace and museum. Usually closed Mondays.' } ],
+  [ { n:'Hiranyakeshi Temple, Amboli', k:'Temple', d:'Small Shiva temple at the source of the Hiranyakeshi river, in a cave.' },
+    { n:'Sunset Point, Amboli', k:'See', d:'Valley viewpoint at the top of the ghat; also Kavlesad Point.' },
+    { n:'Moti Talav, Sawantwadi', k:'See', d:'Lake in the town centre, by the old palace.' },
+    { n:'Sawantwadi Palace', k:'Shop', d:'Wooden toys, lacquerware and Ganjifa cards made in the town; good for the baby.' } ],
+  [ { n:'Redi Ganpati Temple', k:'Temple', d:'Swayambhu Ganpati found in a mine; quiet and close to the stay.' },
+    { n:'Yashwantgad Fort, Redi', k:'See', d:'Ruined sea fort near Redi beach.' },
+    { n:'Tiracol Fort', k:'See', d:'Small Portuguese fort with a chapel, across the river from Redi.' },
+    { n:'Arambol Sweet Water Lake', k:'See', d:'Freshwater lake behind Arambol beach; a short walk.' },
+    { n:'Morjim Beach', k:'See', d:'Quieter beach for the fireworks; olive ridley turtles nest here in winter, so keep off marked areas.' } ],
+  [ { n:'Shri Mangueshi Temple, Mangeshi', k:'Temple', d:'Goa\'s best-known Shiva temple with its lamp tower. About 22 km from Panjim.' },
+    { n:'Shri Shantadurga Temple, Kavlem', k:'Temple', d:'Large temple near Ponda, 5 km from Mangeshi.' },
+    { n:'Basilica of Bom Jesus, Old Goa', k:'See', d:'UNESCO church with St Francis Xavier\'s relics; Se Cathedral is across the road.' },
+    { n:'Fontainhas, Panaji', k:'See', d:'Old Latin quarter of coloured houses; lunch nearby.' } ],
+  [ { n:'Amboli Ghat viewpoints', k:'See', d:'A last stop at the top of the ghat on the way home.' },
+    { n:'Sajjangad, Satara', k:'Temple', d:'Samarth Ramdas\'s samadhi (he wrote Sukhakarta Dukhaharta). Detour, about 15 km from Satara.' },
+    { n:'Shri Mahalakshmi Temple, Kolhapur', k:'Temple', d:'If you missed it on day 1, it is on the way.' } ]
+];
+
 /* Each day: route km share, tolls, and the night's stay. Kolhapur is night 1; the coast is nights 2–4. */
 const DAYS = [
   { km:230, toll:.5, night:'kolhapur' },
@@ -302,9 +335,11 @@ dayEls.forEach((el, i) => {
   if (d.night === 'kolhapur') night = `<div class="night"><span class="lbl">Night</span><b>Hotel Landmark</b><small>Amatya Tower, Dabholkar Corner · 10 min from Mahalaxmi temple</small><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(KOLHAPUR_HOTEL)}">Map</a></div>`;
   else if (d.night === 'coast') night = `<div class="night"><span class="lbl">Night</span><select aria-label="Stay for this night" data-stay-select>${stays.map(s => `<option value="${s.id}"></option>`).join('')}</select><small data-stay-place></small><a target="_blank" rel="noopener" data-stay-map>Map</a></div>`;
   else night = `<div class="night"><span class="lbl">Night</span><b>Home in Pune</b></div>`;
+  night += `<details class="along"><summary>Along the way: ${plural(ALONG[i].filter(a => a.k === 'Temple').length, 'temple')}, ${plural(ALONG[i].filter(a => a.k !== 'Temple').length, 'other stop')}</summary><ul>${ALONG[i].map(a => `<li><span class="k k-${a.k.toLowerCase()}">${a.k}</span><span><b></b> <small></small> <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.n)}">Map</a></span></li>`).join('')}</ul></details>`;
   night += `<div class="night"><span class="lbl">Route</span><a target="_blank" rel="noopener" data-route="${i}">Open this day in Google Maps</a></div>`;
   x.innerHTML = night + `<div class="cost"><span class="lbl">Cost</span><span data-c="fuel"></span><span data-c="toll"></span><span data-c="stay"></span><span data-c="food"></span><span class="sum" data-c="sum"></span></div>`;
   x.querySelectorAll('option').forEach((o, k) => { o.textContent = stays[k].name; });
+  x.querySelectorAll('.along li').forEach((li, k) => { li.querySelector('b').textContent = ALONG[i][k].n; li.querySelector('small').textContent = ALONG[i][k].d; });
   el.appendChild(x);
 });
 document.querySelectorAll('[data-stay-select]').forEach(sel => sel.addEventListener('change', () => setStay(sel.value)));
