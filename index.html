@@ -131,17 +131,16 @@ footer{margin-top:36px;color:var(--muted);font-size:12.5px;border-top:1px solid 
 
   <div class="panel" id="trip" role="tabpanel" aria-labelledby="tab-trip">
   <section id="plan" aria-labelledby="h-plan">
-    <h2 id="h-plan">Five days, 29 Dec to 2 Jan</h2>
-    <p class="lede">About 955 km by car, never more than 5 hours of driving on a day with the baby, except the drive home. Each day shows where you sleep and what the day costs; change the numbers in the budget below.</p>
+    <h2 id="h-plan">Four days, 30 Dec to 2 Jan</h2>
+    <p class="lede">About 965 km by car. New Year's Eve is a full day: four hours to the coast, a rest, then the night in Goa. The drive home is the long one. Each day shows where you sleep and what the day costs; change the numbers in the budget below.</p>
     <p><a class="maplink" id="wholeRoute" target="_blank" rel="noopener">Whole route on Google Maps</a> <small class="muted-note">Pune, Kolhapur, Amboli, your coast stay, Morjim, Panjim and home. On a phone the Maps app may drop some stops; use the per-day links there.</small></p>
     <div class="days" id="days">
-      <div class="day"><div class="date">Tue<strong>29</strong>Dec</div><h3>Pune to Kolhapur</h3><div class="meta">230 km · 4.5–5 h · NH48</div><p>Leave by 8 AM. Afternoon darshan at Mahalaxmi temple, Rankala lake at sunset. Night in Kolhapur.</p></div>
-      <div class="day"><div class="date">Wed<strong>30</strong>Dec</div><h3>Over Amboli ghat to the coast</h3><div class="meta">155 km · 4 h</div><p>Amboli ghat viewpoints on the way (the waterfalls run in the monsoon and are mostly dry by late December), lunch in Sawantwadi. Check in before dark.</p></div>
-      <div class="day key"><div class="date">Thu<strong>31</strong>Dec</div><h3>New Year in North Goa</h3><div class="meta">50–70 km round trip · 1.5 h normally; allow about 1 h each way tonight</div><p>Morning at Redi beach and Redi Ganpati. Leave at 4 PM for Morjim, Ashwem or Arambol; park early, watch the early fireworks, head back by about 12:30–1 AM. The driver does not drink.</p></div>
-      <div class="day"><div class="date">Fri<strong>1</strong>Jan</div><h3>Panjim and Old Goa</h3><div class="meta">100 km round trip · 2.5 h</div><p>Fontainhas lanes, Basilica of Bom Jesus, a slow lunch. Or a quiet day at Tiracol Fort and the beach.</p></div>
+      <div class="day"><div class="date">Wed<strong>30</strong>Dec</div><h3>Pune to Kolhapur</h3><div class="meta">230 km · 4.5–5 h · NH48</div><p>Leave by 8 AM. Afternoon darshan at Mahalaxmi temple, Rankala lake at sunset. Early night in Kolhapur.</p></div>
+      <div class="day key"><div class="date">Thu<strong>31</strong>Dec</div><h3>Over Amboli to the coast, then New Year in North Goa</h3><div class="meta">155 km · 4 h to the stay, then 50–70 km round trip at night</div><p>Leave Kolhapur by 7:30 AM, Amboli ghat viewpoints on the way (the waterfalls are mostly dry by late December), lunch in Sawantwadi, check in by about 2 PM and rest. Leave at 5 PM for Morjim, Ashwem or Arambol; allow about 1 h each way tonight. Park early, watch the early fireworks, head back by about 12:30–1 AM. The driver does not drink.</p></div>
+      <div class="day"><div class="date">Fri<strong>1</strong>Jan</div><h3>Redi Ganpati, then Panjim and Old Goa</h3><div class="meta">about 110 km round trip · 3 h</div><p>A slow start. Redi Ganpati and Redi beach in the morning, 10 minutes from the stay. Then Fontainhas, the Basilica of Bom Jesus and a late lunch; Mangueshi temple if there is energy. Or keep it quiet at Tiracol Fort and the beach.</p></div>
       <div class="day"><div class="date">Sat<strong>2</strong>Jan</div><h3>Home via Amboli and Kolhapur</h3><div class="meta">about 400 km · 8–8.5 h · NH48 from Kolhapur</div><p>Leave by 7 AM, back over Amboli ghat, lunch in Kolhapur, reach Pune by evening. The Belagavi route is about 470 km and an hour longer.</p></div>
     </div>
-    <div class="tripsum"><span>Whole trip, Pune and back (5 days, includes the drive home)</span><b id="tripTotal">₹0</b></div>
+    <div class="tripsum"><span>Whole trip, Pune and back (4 days, includes the drive home)</span><b id="tripTotal">₹0</b></div>
   </section>
 
   <section id="stays" aria-labelledby="h-stays">
@@ -166,15 +165,15 @@ footer{margin-top:36px;color:var(--muted);font-size:12.5px;border-top:1px solid 
     <p class="lede">Change any number; the total updates. Starting values come from the trip plan: a compact SUV at 14.5 km/l with a full car, Pune petrol at the latest published price (7 Sep 2026). Cars registered in Pune (MH-12) may be exempt at Khed-Shivapur.</p>
     <div class="calc">
       <div class="fields">
-        <div class="field"><label for="km">Distance (km)<small>whole trip</small></label><input id="km" type="number" inputmode="decimal" value="955"></div>
+        <div class="field"><label for="km">Distance (km)<small>whole trip</small></label><input id="km" type="number" inputmode="decimal" value="965"></div>
         <div class="field"><label for="kmpl">Mileage (km/l)<small>loaded, highway</small></label><input id="kmpl" type="number" inputmode="decimal" step="0.1" value="14.5"></div>
         <div class="field"><label for="petrol">Petrol (₹/litre)<small>Pune, 7 Sep 2026, latest published</small></label><input id="petrol" type="number" inputmode="decimal" step="0.01" value="111.97"></div>
         <div class="field"><label for="tolls">Tolls (₹)<small>both ways; Khed-Shivapur and Anewadi ₹120 each, Tasawade and Kini estimated</small></label><input id="tolls" type="number" inputmode="decimal" value="900"></div>
         <div class="field"><label for="n1">Kolhapur nights</label><input id="n1" type="number" inputmode="numeric" value="1"></div>
         <div class="field"><label for="r1">Kolhapur ₹ per night<small>2 rooms</small></label><input id="r1" type="number" inputmode="decimal" value="4000"></div>
-        <div class="field"><label for="n2">Coast nights</label><input id="n2" type="number" inputmode="numeric" value="3"></div>
+        <div class="field"><label for="n2">Coast nights</label><input id="n2" type="number" inputmode="numeric" value="2"></div>
         <div class="field"><label for="r2">Coast ₹ per night<small>2 rooms, New Year</small></label><input id="r2" type="number" inputmode="decimal" value="7500"></div>
-        <div class="field"><label for="food">Food (₹)</label><input id="food" type="number" inputmode="decimal" value="5000"></div>
+        <div class="field"><label for="food">Food (₹)</label><input id="food" type="number" inputmode="decimal" value="4000"></div>
         <div class="field"><label for="misc">Parking, entries, misc (₹)</label><input id="misc" type="number" inputmode="decimal" value="2000"></div>
       </div>
       <div class="total" aria-live="polite">
@@ -278,13 +277,12 @@ function routes(stay){
   return {
     days: [
       [PUNE, 'Shri Mahalakshmi Ambabai Temple, Kolhapur', KOLHAPUR_HOTEL],
-      [KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', 'Sawantwadi, Maharashtra', stay],
-      [stay, 'Redi Ganpati Temple, Redi', 'Morjim Beach, Goa', stay],
-      [stay, 'Fontainhas, Panaji, Goa', 'Basilica of Bom Jesus, Old Goa', stay],
+      [KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', 'Sawantwadi, Maharashtra', stay, 'Morjim Beach, Goa', stay],
+      [stay, 'Redi Ganpati Temple, Redi', 'Fontainhas, Panaji, Goa', 'Basilica of Bom Jesus, Old Goa', stay],
       [stay, 'Amboli Ghat, Maharashtra', 'Kolhapur, Maharashtra', PUNE]
     ],
     // Google Maps takes at most 9 stops between start and end.
-    whole: [PUNE, KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', stay, 'Morjim Beach, Goa', stay, 'Fontainhas, Panaji, Goa', stay, 'Amboli Ghat, Maharashtra', 'Kolhapur, Maharashtra', PUNE]
+    whole: [PUNE, KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', stay, 'Morjim Beach, Goa', stay, 'Redi Ganpati Temple, Redi', 'Fontainhas, Panaji, Goa', stay, 'Kolhapur, Maharashtra', PUNE]
   };
 }
 function setRoutes(stay){
@@ -303,28 +301,27 @@ const ALONG = [
     { n:'New Palace Museum, Kolhapur', k:'See', d:'Shahu Maharaj palace and museum. Usually closed Mondays.' } ],
   [ { n:'Hiranyakeshi Temple, Amboli', k:'Temple', d:'Small Shiva temple at the source of the Hiranyakeshi river, in a cave.' },
     { n:'Sunset Point, Amboli', k:'See', d:'Valley viewpoint at the top of the ghat; also Kavlesad Point.' },
-    { n:'Moti Talav, Sawantwadi', k:'See', d:'Lake in the town centre, by the old palace.' },
-    { n:'Sawantwadi Palace', k:'Shop', d:'Wooden toys, lacquerware and Ganjifa cards made in the town; good for the baby.' } ],
-  [ { n:'Redi Ganpati Temple', k:'Temple', d:'Swayambhu Ganpati found in a mine; quiet and close to the stay.' },
-    { n:'Yashwantgad Fort, Redi', k:'See', d:'Ruined sea fort near Redi beach.' },
-    { n:'Tiracol Fort', k:'See', d:'Small Portuguese fort with a chapel, across the river from Redi.' },
-    { n:'Arambol Sweet Water Lake', k:'See', d:'Freshwater lake behind Arambol beach; a short walk.' },
+    { n:'Moti Talav, Sawantwadi', k:'See', d:'Lake in the town centre, by the old palace; stop for lunch.' },
+    { n:'Sawantwadi Palace', k:'Shop', d:'Wooden toys, lacquerware and Ganjifa cards made in the town; good for the baby.' },
+    { n:'Arambol Sweet Water Lake', k:'See', d:'Freshwater lake behind Arambol beach, if you get there before dark.' },
     { n:'Morjim Beach', k:'See', d:'Quieter beach for the fireworks; olive ridley turtles nest here in winter, so keep off marked areas.' } ],
-  [ { n:'Shri Mangueshi Temple, Mangeshi', k:'Temple', d:'Goa\'s best-known Shiva temple with its lamp tower. About 22 km from Panjim.' },
+  [ { n:'Redi Ganpati Temple', k:'Temple', d:'Swayambhu Ganpati found in a mine; 10 minutes from the stay.' },
+    { n:'Shri Mangueshi Temple, Mangeshi', k:'Temple', d:'Goa\'s best-known Shiva temple with its lamp tower. About 22 km from Panjim.' },
     { n:'Shri Shantadurga Temple, Kavlem', k:'Temple', d:'Large temple near Ponda, 5 km from Mangeshi.' },
     { n:'Basilica of Bom Jesus, Old Goa', k:'See', d:'UNESCO church with St Francis Xavier\'s relics; Se Cathedral is across the road.' },
-    { n:'Fontainhas, Panaji', k:'See', d:'Old Latin quarter of coloured houses; lunch nearby.' } ],
+    { n:'Fontainhas, Panaji', k:'See', d:'Old Latin quarter of coloured houses; lunch nearby.' },
+    { n:'Yashwantgad Fort, Redi', k:'See', d:'Ruined sea fort near Redi beach.' },
+    { n:'Tiracol Fort', k:'See', d:'Small Portuguese fort with a chapel, across the river from Redi.' } ],
   [ { n:'Amboli Ghat viewpoints', k:'See', d:'A last stop at the top of the ghat on the way home.' },
     { n:'Sajjangad, Satara', k:'Temple', d:'Samarth Ramdas\'s samadhi (he wrote Sukhakarta Dukhaharta). Detour, about 15 km from Satara.' },
     { n:'Shri Mahalakshmi Temple, Kolhapur', k:'Temple', d:'If you missed it on day 1, it is on the way.' } ]
 ];
 
-/* Each day: route km share, tolls, and the night's stay. Kolhapur is night 1; the coast is nights 2–4. */
+/* Each day: route km share, tolls, and the night's stay. Kolhapur is night 1; the coast is nights 2–3. */
 const DAYS = [
   { km:230, toll:.5, night:'kolhapur' },
-  { km:155, night:'coast' },
-  { km:70,  night:'coast' },
-  { km:100, night:'coast' },
+  { km:225, night:'coast' },
+  { km:110, night:'coast' },
   { km:400, toll:.5, night:null }
 ];
 const dayEls = [...document.querySelectorAll('#days .day')];
@@ -362,7 +359,7 @@ setStay(chosen);
 /* Budget */
 const ids = ['km','kmpl','petrol','tolls','n1','r1','n2','r2','food','misc'];
 const defaults = Object.fromEntries(ids.map(i => [i, document.getElementById(i).value]));
-const saved = store.get('goa-budget-v2', {});
+const saved = store.get('goa-budget-v3', {});
 ids.forEach(i => { if (saved[i] !== undefined) document.getElementById(i).value = saved[i]; });
 const inr = n => '₹' + Math.round(n).toLocaleString('en-IN');
 function calc(){
@@ -395,7 +392,7 @@ function calc(){
     q('sum').textContent = inr(sum);
   });
   document.getElementById('tripTotal').textContent = inr(all);
-  store.set('goa-budget-v2', Object.fromEntries(ids.map(i => [i, document.getElementById(i).value])));
+  store.set('goa-budget-v3', Object.fromEntries(ids.map(i => [i, document.getElementById(i).value])));
 }
 ids.forEach(i => document.getElementById(i).addEventListener('input', calc));
 // The coast rate field is the chosen stay's rate: editing it updates that stay.
@@ -409,7 +406,7 @@ calc();
 const groups = {
   'Documents': ['Driving licence','RC and car insurance papers','FASTag recharged','Aadhaar for every adult','Hotel bookings saved offline'],
   'Car': ['Tyre pressure and spare','Coolant and oil checked','Phone mount and charger','First-aid kit','Offline maps for Amboli ghat'],
-  'For the baby': ['Diapers and wipes for 6 days','Feeding bottles and steriliser','Warm layers for Amboli nights','Baby medicines and thermometer','Ear muffs for fireworks','Car seat fitted'],
+  'For the baby': ['Diapers and wipes for 5 days','Feeding bottles and steriliser','Warm layers for Amboli nights','Baby medicines and thermometer','Ear muffs for fireworks','Car seat fitted'],
   "New Year's night": ['Parking spot picked near Morjim','Designated driver, no drinking','Torch and power bank','Leave by 12:30–1 AM','Hotel told you will be back late']
 };
 const ticks = store.get('goa-ticks', {});
