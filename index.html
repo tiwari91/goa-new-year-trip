@@ -133,7 +133,7 @@ footer{margin-top:36px;color:var(--muted);font-size:12.5px;border-top:1px solid 
   <section id="plan" aria-labelledby="h-plan">
     <h2 id="h-plan">Four days, 30 Dec to 2 Jan</h2>
     <p class="lede">About 965 km by car. New Year's Eve is a full day: four hours to the coast, a rest, then the night in Goa. The drive home is the long one. Each day shows where you sleep and what the day costs; change the numbers in the budget below.</p>
-    <p><a class="maplink" id="wholeRoute" target="_blank" rel="noopener">Whole route on Google Maps</a> <small class="muted-note">Pune, Kolhapur, Amboli, your coast stay, Morjim, Panjim and home. On a phone the Maps app may drop some stops; use the per-day links there.</small></p>
+    <p><a class="maplink" id="oneWay" target="_blank" rel="noopener">Pune to Goa, one way</a><a class="maplink" id="wholeRoute" target="_blank" rel="noopener">Whole route on Google Maps</a> <small class="muted-note">One way: Pune, Hotel Landmark, Amboli and your stay. Whole route: on to Morjim, Redi, Panjim and home. On a phone the Maps app may drop some stops; use the per-day links there.</small></p>
     <div class="days" id="days">
       <div class="day"><div class="date">Wed<strong>30</strong>Dec</div><h3>Pune to Kolhapur</h3><div class="meta">230 km · 4.5–5 h · NH48</div><p>Leave by 8 AM. Afternoon darshan at Mahalaxmi temple, Rankala lake at sunset. Early night in Kolhapur.</p></div>
       <div class="day key"><div class="date">Thu<strong>31</strong>Dec</div><h3>Over Amboli to the coast, then New Year in North Goa</h3><div class="meta">155 km · 4 h to the stay, then 50–70 km round trip at night</div><p>Leave Kolhapur by 7:30 AM, Amboli ghat viewpoints on the way (the waterfalls are mostly dry by late December), lunch in Sawantwadi, check in by about 2 PM and rest. Leave at 5 PM for Morjim, Ashwem or Arambol; allow about 1 h each way tonight. Park early, watch the early fireworks, head back by about 12:30–1 AM. The driver does not drink.</p></div>
@@ -216,6 +216,8 @@ const stays = [
   { id:'seaview', place:'Vengurla', name:'Sea View Homestay', rating:'9.2 · 5 reviews', note:'Well rated, small sample. Not found on booking sites on 16 Oct 2026: confirm it is open.', tag:['caution','Few reviews'], q:'Sea View Homestay Vengurla' },
   { id:'dolphin', place:'Shiroda, Velagar beach', name:'Dolphin Bay', rating:'One review: average, affordable', note:'Owner-run, on private land by the beach. Not found on booking sites on 16 Oct 2026: confirm it is open.', tag:['caution','Little info'], q:'Dolphin Bay Velagar Shiroda' },
   { id:'surya', place:'Tarkarli · stop on the way', name:'Hotel Surya Grande', rating:'Positive family reviews', note:'Family rooms and parking. Use it if you take the Konkan coast route. A Surya Grande listing online is in Kudal, not Tarkarli: check the address.', tag:['stop','Route stop'], q:'Hotel Surya Grande Tarkarli' },
+  { id:'meraden-opus', place:'Anjuna, North Goa · in Goa itself', name:'Hotel Meraden Opus', rating:'6 / 10 on one listing · 22 rooms', note:'A minute from Anjuna beach, about 13 min to Vagator. Inside Goa, so New Year rates run high; 31 Dec is about 5 h from Kolhapur, and Redi Ganpati becomes a 45-min drive.', tag:['caution','In Goa: check NYE price'], q:'Hotel Meraden Opus Anjuna Goa' },
+  { id:'meraden-oasis', place:'Anjuna, North Goa · in Goa itself', name:'Meraden La Oasis', rating:'Listed on Kayak; few reviews seen', note:'Restaurant, room service and an airport shuttle per its listing. Inside Goa, so New Year rates run high; 31 Dec is about 5 h from Kolhapur.', tag:['caution','In Goa: check NYE price'], q:'Meraden La Oasis Anjuna Goa' },
   { id:'shilpgram', place:'Charathe, Sindhudurg', name:'Shilpgram Heritage Resort', rating:'Positive family reviews', note:'Big, clean rooms and good food.', tag:['stop','Alternative'], q:'Shilpgram Heritage Resort Sindhudurg', rate:7000, rnote:'About ₹3,500 a room on Trip.com, undated' }
 ];
 /* Tabs */
@@ -268,6 +270,7 @@ stays.forEach(s => {
 });
 
 /* Google Maps directions: one link per day and one for the whole trip, through the chosen coast stay. */
+const SAVED_ROUTE = 'https://www.google.com/maps/dir/Pune,+Maharashtra/Hotel+Landmark,+5th+%26+6th+Floor,Amatya+Tower,Dabholkar+Corner,+Maharashtra+416003/Amboli+ghat,+Amboli,+Parpoli,+Maharashtra+416510/Konkan+Crown+-+Resort+%26+Club,+Opp.+Sawantwadi+Railway+Station,+Nirwade,+Sawantwadi,+Maharashtra+416514/Morjim+Beach+Goa,+Tem,+Morjim,+Goa+403512/Konkan+Crown+-+Resort+%26+Club,+Opp.+Sawantwadi+Railway+Station,+Nirwade,+Sawantwadi,+Maharashtra+416514/Redi+Ganpati+Mandir,+PMV4%2B6WW,+Redi,+Kanyale,+Redi,+Maharashtra+416517/Fontainhas+(quarter),+Altinho,+Panaji,+Goa+403001/Konkan+Crown+-+Resort+%26+Club,+Opp.+Sawantwadi+Railway+Station,+Nirwade,+Sawantwadi,+Maharashtra+416514/Kolhapur,+Maharashtra/Pune,+Maharashtra/@17.0036629,72.7118398,8z/data=!3m2!4b1!5s0x3bc1006a089852ad:0xc61bfd04ef2a6901!4m68!4m67!1m5!1m1!1s0x3bc2bf2e67461101:0x828d43bf9d9ee343!2m2!1d73.8786239!2d18.5246091!1m5!1m1!1s0x3bc1006a09073805:0x987b89b06af7166f!2m2!1d74.2412344!2d16.7049374!1m5!1m1!1s0x3bc077eaf75d0b93:0x7de8d8722794ebf8!2m2!1d73.9934517!2d15.9572313!1m5!1m1!1s0x3bbff4cad758efdb:0xe16712a1221c7f05!2m2!1d73.7856144!2d15.8634266!1m5!1m1!1s0x3bbfe976d9a386af:0x1f46aebbe429d6d2!2m2!1d73.7335798!2d15.6173203!1m5!1m1!1s0x3bbff4cad758efdb:0xe16712a1221c7f05!2m2!1d73.7856144!2d15.8634266!1m5!1m1!1s0x3bbff03dd4f0c63f:0x3f5277a10584411b!2m2!1d73.6575253!2d15.7429952!1m5!1m1!1s0x3bbfc08583a30205:0xade68cd13f55ee7a!2m2!1d73.8300775!2d15.4941033!1m5!1m1!1s0x3bbff4cad758efdb:0xe16712a1221c7f05!2m2!1d73.7856144!2d15.8634266!1m5!1m1!1s0x3bc1000cdec07a29:0xece8ea642952e42f!2m2!1d74.2481772!2d16.706369!1m5!1m1!1s0x3bc2bf2e67461101:0x828d43bf9d9ee343!2m2!1d73.8786239!2d18.5246091!3e0';
 const KOLHAPUR_HOTEL = 'Hotel Landmark, Amatya Tower, Dabholkar Corner, Kolhapur 416003';
 const PUNE = 'Pune, Maharashtra';
 const dirUrl = (stops) => 'https://www.google.com/maps/dir/?api=1&travelmode=driving&origin=' + encodeURIComponent(stops[0]) +
@@ -288,7 +291,9 @@ function routes(stay){
 function setRoutes(stay){
   const r = routes(stay);
   document.querySelectorAll('[data-route]').forEach(a => { a.href = dirUrl(r.days[+a.dataset.route]); });
-  const w = document.getElementById('wholeRoute'); if (w) w.href = dirUrl(r.whole);
+  // With Konkan Crown, use the saved Google Maps route (stops pinned to exact places).
+  const o = document.getElementById('oneWay'); if (o) o.href = dirUrl([PUNE, KOLHAPUR_HOTEL, 'Amboli Ghat, Maharashtra', stay]);
+  const w = document.getElementById('wholeRoute'); if (w) w.href = stay === 'Konkan Crown Resort Sawantwadi' ? SAVED_ROUTE : dirUrl(r.whole);
 }
 
 const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
